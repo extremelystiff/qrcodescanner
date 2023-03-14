@@ -125,7 +125,15 @@ var video = document.getElementById("video");
       outputData.innerText = code.data;
       // Set scanning to false after a successful scan
       scanning = false;
-      google.script.run.navigateToSheetTabFromQRCode(code.data);
+      if (window.opener) {
+  window.opener.postMessage({ type: "qrCodeData", qrCodeUrl: code.data }, "*");
+  setTimeout(function() {
+    window.close();
+  }, 2000);
+} else {
+  console.error("Unable to communicate with the parent window.");
+}
+
       setTimeout(function() {
         google.script.host.close();
       }, 2000);
